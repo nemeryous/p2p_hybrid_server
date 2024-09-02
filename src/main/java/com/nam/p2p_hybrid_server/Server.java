@@ -41,7 +41,7 @@ public class Server {
                 thread.start();
                 System.out.println(clients.size());
 
-                // Setup Peer's server port
+//                 Setup Peer's server port
                 setupClientServerPort(newClient);
 
 //                Send all peer's server port for new peer

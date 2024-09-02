@@ -28,7 +28,6 @@ public final class Client implements Runnable{
         this.clientSocket = clientSocket;
         this.dis = new DataInputStream(clientSocket.getInputStream());
         this.dos = new DataOutputStream(clientSocket.getOutputStream());
-        sendMessage("Enter your name");
     }
 
     @Override
@@ -95,7 +94,7 @@ public final class Client implements Runnable{
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             objectOutputStream.writeObject(peerServerPort);
             objectOutputStream.flush();
-            objectOutputStream.close();
+//            objectOutputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
