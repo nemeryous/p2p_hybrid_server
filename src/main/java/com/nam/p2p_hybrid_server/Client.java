@@ -47,10 +47,15 @@ public final class Client implements Runnable{
                         sendMessage("your_name");
                         sendMessage(name);
                     }
+                    case "create_server_successful" -> {
+                        sendNewPortForAllPeer(this);
+                    }
+                       
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 try {
+                    P2p_hybrid_server.clients.remove(this);
                     clientSocket.close();
                     dis.close();
                     dos.close();
@@ -97,6 +102,20 @@ public final class Client implements Runnable{
 //            objectOutputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void sendNewPortForAllPeer(Client newClient) {
+        for (Client client : P2p_hybrid_server.clients) {
+            if (!client.equals(newClient)) {
+                System.out.println("Server port: " + client.clientServerPort);
+                try {
+                    client.sendMessage("new_peer");
+                    client.sendMessage(newClient.clientServerPort.toString());
+                } catch (IOException ex) {
+                    System.out.println("Error in sendNewPortForAllPeer method \n" + ex);
+                }
+            }
         }
     }
     

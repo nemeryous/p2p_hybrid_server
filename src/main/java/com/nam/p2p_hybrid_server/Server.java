@@ -19,57 +19,60 @@ import java.util.logging.Logger;
  * @author NAM
  */
 public class Server {
+
     ServerSocket serverSocket;
-    Set<Client> clients;
+
+    Integer currentPort;
 
     public Server() {
-        clients = new HashSet<>();
+        currentPort = 1;
         try {
             this.serverSocket = new ServerSocket(9999);
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void run() {
         while (true) {
             try {
                 Socket clientSocket = serverSocket.accept();
                 Client newClient = new Client(clientSocket);
-                clients.add(newClient);
+                P2p_hybrid_server.clients.add(newClient);
                 Thread thread = new Thread(newClient);
                 thread.start();
-                System.out.println(clients.size());
 
-//                 Setup Peer's server port
-                setupClientServerPort(newClient);
+//              Generate port for new client
+//              Setup Peer's server port
+                setupClientServerPort(currentPort, newClient);
+                currentPort++;
 
-//                Send all peer's server port for new peer
+//              Send all peer's server port for new peer
                 sendAllPeerPortForClient(newClient);
-                
-                
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+
+
+            } catch (Exception ex) {
+                System.out.println("Error in run method of Server Class Thread \n" + ex);
             }
         }
     }
-    
-    
-    public void setupClientServerPort(Client client) {
-        client.setClientServerPort(clients.size());
-       
+
+    public void setupClientServerPort(Integer port, Client client) {
+        client.setClientServerPort(port);
+
     }
-    
+
     public void sendAllPeerPortForClient(Client directClient) {
         List<Integer> peerServerPorts = new ArrayList<>();
-        
-        for (Client client : clients) {
-                    if (!client.equals(directClient)) {
-                        peerServerPorts.add(client.getClientServerPort());
-                    }
-                }
+
+        for (Client client : P2p_hybrid_server.clients) {
+            if (!client.equals(directClient)) {
+                peerServerPorts.add(client.getClientServerPort());
+            }
+        }
         directClient.sendAllServerPortForPeer(peerServerPorts);
     }
+
     
-    
+
 }
