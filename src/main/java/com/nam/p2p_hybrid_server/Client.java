@@ -44,8 +44,6 @@ public final class Client implements Runnable{
                     case "new_user" -> {
                         String  clientName = dis.readUTF();
                         this.name = clientName;
-                        sendMessage("your_name");
-                        sendMessage(name);
                     }
                     case "create_server_successful" -> {
                         sendNewPortForAllPeer(this);
